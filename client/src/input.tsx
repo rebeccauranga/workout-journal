@@ -1,59 +1,68 @@
 import { MenuItem, TextField, InputAdornment, Button } from "@material-ui/core";
 import SaveIcon from "@material-ui/icons/Save";
 import { useState, ChangeEvent, useEffect } from "react";
-import { lowerBody, upperBody, cardio } from "./workouts";
 import { ExerciseOptions } from "./exercise-options";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
+import {
+  Exercise,
+  // ExerciseCategory,
+  ExerciseConfiguration,
+} from "../../shared/models";
+
+export enum ExerciseCategory {
+  LowerBody = "Lower Body",
+  UpperBody = "Upper Body",
+  Cardio = "Cardio",
+}
 
 export const Input = () => {
-  const [split, setSplit] = useState(null);
-  const [workoutType, setWorkoutType] = useState("");
-  const [sets, setSets] = useState("");
-  const [reps, setReps] = useState("");
-  const [time, setTime] = useState("");
+  const [category, setCategory] = useState<ExerciseCategory>();
+  const [exercise, setExercise] = useState<Exercise>();
+  const [sets, setSets] = useState<number>();
+  const [reps, setReps] = useState<number>();
+  const [durationSeconds, setDurationSeconds] = useState<number>();
   const [savedExercise, setSavedExercise] = useState(false);
-  const [exercise, setExercise] = useState([
-    { workoutType: "", sets: "", reps: "" },
-  ]);
+  const [exerciseConfigs, setExerciseConfigs] = useState<ExerciseConfiguration[]>([]);
+  const [exercises, setExercises] = useState([]);
 
-  // async function callApi(){
-  //   const response = await fetch('localhost:3000/api/exercises');
-  //   debugger
-  //   const body = await response.json();
-  //   console.log(body);
-  //   if (response.status !== 200) throw Error(body.message);
-  //   return body;
-  // };
+  async function callAPI() {
+    const url = "/api/exercises";
+    const result = await fetch(url);
+    const exercises = await result.json();
+    setExercises(exercises);
+    console.log(exercises[0]);
+  }
 
-  // // console.log(callApi());
-  // useEffect(() => {
-  //   callApi();
-  // })
+  useEffect(() => {
+    try {
+      callAPI();
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
 
   const handleChangeSave = () => {
     setSavedExercise(true);
-    setExercise([
-      ...exercise,
-      { workoutType: workoutType, sets: sets, reps: reps },
-    ]);
+    setExerciseConfigs([...exerciseConfigs, { exercise, sets, reps }]);
   };
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setWorkoutType(event.target.value);
+
+  const handleChangeCategory = (event: ChangeEvent<HTMLInputElement>) => {
+    setCategory(event.target.value as ExerciseCategory);
   };
-  const handleChangeSplit = (event: ChangeEvent<HTMLInputElement>) => {
-    setSplit(event.target.value);
+
+  const handleOnSetsChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setSets(parseInt(event.target.value));
   };
-  const handleSets = (event: ChangeEvent<HTMLInputElement>) => {
-    setSets(event.target.value);
+
+  const handleOnRepsChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setReps(parseInt(event.target.value));
   };
-  const handleReps = (event: ChangeEvent<HTMLInputElement>) => {
-    setReps(event.target.value);
-  };
-  const handleTime = (event: ChangeEvent<HTMLInputElement>) => {
-    setTime(event.target.value);
+
+  const handleOnDurationSecondsChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setDurationSeconds(parseInt(event.target.value));
   };
 
   return (
@@ -64,83 +73,67 @@ export const Input = () => {
             id="outlined-select-currency"
             select
             label="Choose your workout split"
-            value={split}
-            onChange={handleChangeSplit}
+            value={category}
+            onChange={handleChangeCategory}
             variant="outlined"
           >
-            <MenuItem key={"lowerBody"} value={"lowerBody"}>
+            <MenuItem key={ExerciseCategory.LowerBody} value={ExerciseCategory.LowerBody}>
               Lower Body
             </MenuItem>
-            <MenuItem key={"upperBody"} value={"upperBody"}>
+            <MenuItem key={ExerciseCategory.UpperBody} value={ExerciseCategory.UpperBody}>
               Upper Body
             </MenuItem>
-            <MenuItem key={"cardio"} value={"cardio"}>
+            <MenuItem key={ExerciseCategory.Cardio} value={ExerciseCategory.Cardio}>
               Cardio
             </MenuItem>
           </TextField>
           <br />
-          {split === "lowerBody" && (
-            <ExerciseOptions
-              value={workoutType}
-              change={handleChange}
-              bodyPart={lowerBody}
-              label={"Choose your lower body exercises"}
+          {category && <ExerciseOptions
+              category={category}
+              value={exercise && exercise.name}
+              onSelectExercise={setExercise}
+              exercises={exercises}
             />
-          )}{" "}
-          {split === "upperBody" && (
-            <ExerciseOptions
-              value={workoutType}
-              change={handleChange}
-              bodyPart={upperBody}
-              label={"Choose your upper body exercises"}
-            />
-          )}{" "}
-          {split === "cardio" && (
-            <ExerciseOptions
-              value={workoutType}
-              change={handleChange}
-              bodyPart={cardio}
-              label={"Choose your cardio"}
-            />
-          )}
+          }
         </div>
         <br />
-        {workoutType !== "" &&
-          (split === "lowerBody" || split === "upperBody") && (
-            <div className="sets-and-reps">
-              <div className="sets">
-                <TextField
-                  label=""
-                  id="sets"
-                  onChange={handleSets}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">Sets</InputAdornment>
-                    ),
-                  }}
-                  variant="outlined"
-                />
-              </div>
-              <br />
+        {exercise && (category === ExerciseCategory.LowerBody || category === ExerciseCategory.UpperBody) && (
+          <div className="sets-and-reps">
+            <div className="sets">
               <TextField
                 label=""
-                id="reps"
-                onChange={handleReps}
+                id="sets"
+                type="number"
+                onChange={handleOnSetsChange}
                 InputProps={{
                   startAdornment: (
-                    <InputAdornment position="start">Reps</InputAdornment>
+                    <InputAdornment position="start">Sets</InputAdornment>
                   ),
                 }}
                 variant="outlined"
               />
-              <br />
             </div>
-          )}
-        {split === "cardio" && workoutType !== "" && (
+            <br />
+            <TextField
+              label=""
+              id="reps"
+              type="number"
+              onChange={handleOnRepsChange}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">Reps</InputAdornment>
+                ),
+              }}
+              variant="outlined"
+            />
+            <br />
+          </div>
+        )}
+        {category === ExerciseCategory.Cardio && exercise && (
           <TextField
             label=""
             id="time"
-            onChange={handleTime}
+            onChange={handleOnDurationSecondsChange}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">Duration</InputAdornment>
@@ -150,18 +143,9 @@ export const Input = () => {
           />
         )}
         <br />
-        {(sets !== "" && reps !== "" && split !== "cardio") ||
-        (time !== "" && split === "cardio") ? (
+        {(sets && reps && category !== ExerciseCategory.Cardio) ||
+        (durationSeconds && category === ExerciseCategory.Cardio) ? (
           <>
-            {/* <Button
-              variant="contained"
-              color="primary"
-              size="large"
-              onClick={() => handleChangeSave()}
-              startIcon={<SaveIcon />}
-            >
-              Add Exercise
-            </Button> */}
             <Fab
               size="medium"
               color="secondary"
@@ -180,13 +164,13 @@ export const Input = () => {
         <div className="saved">
           <div>
             <ul>
-              {exercise.map(({ workoutType, sets, reps }, index) => {
+              {exerciseConfigs.map(({ exercise, sets, reps }, index) => {
                 return (
-                  workoutType && (
+                  exercise && (
                     <div key={index}>
                       <li key={index}>
                         <span>
-                          {workoutType} {sets} sets of {reps}
+                          {exercise.name} {sets} sets of {reps}
                         </span>
                         <button className="delete-exercise-btn">
                           <IconButton aria-label="delete">
@@ -205,12 +189,10 @@ export const Input = () => {
             variant="contained"
             color="primary"
             size="large"
-            // onClick={handleChangeSave}
             startIcon={<SaveIcon />}
           >
             Save workout
           </Button>
-          {/* <TransitionsModal /> */}
         </div>
       ) : (
         ""
