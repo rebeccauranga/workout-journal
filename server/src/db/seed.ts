@@ -1,6 +1,6 @@
 import pool from "./config";
 import { v4 as uuidv4 } from "uuid";
-import { Exercise, ExerciseCategory } from "../models";
+import { Exercise, ExerciseCategory } from "../../../shared/models";
 
 const exercises: Exercise[] = [
   {

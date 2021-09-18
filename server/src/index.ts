@@ -7,7 +7,7 @@ app.get("/", (req, res) => {
   res.send("hello world");
 });
 
-app.get("/api/exercises", async (req, res) => {
+app.get("/api/exercises", async (req, res, next) => {
   const exercises = await listExercises();
   res.json(exercises);
 });
