@@ -1,29 +1,49 @@
-import { MenuItem, TextField } from "@material-ui/core";
-// import PropTypes, { InferProps} from "prop-types";
+import { MenuItem, TextField, useScrollTrigger } from "@material-ui/core";
+import { ChangeEvent } from "react";
+import { Exercise, ExerciseCategory } from "../../shared/models";
 
-export const ExerciseOptions = ({ value, change, bodyPart, label }) => {
+interface ExerciseOptionsProps {
+  category: ExerciseCategory;
+  value: string;
+  exercises: Exercise[];
+  onSelectExercise: (exercise: Exercise) => void;
+}
+
+export const ExerciseOptions = ({
+  value,
+  category,
+  exercises,
+  onSelectExercise,
+}: ExerciseOptionsProps) => {
+  const handleOnChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const selectedExerciseId = event.target.value;
+    const selectedExercise = exercises.find(
+      (exercise) => exercise.id === selectedExerciseId
+    );
+    onSelectExercise(selectedExercise);
+  };
+
+  if (!exercises) {
+    return null;
+  }
+
   return (
     <TextField
       id="outlined-select-currency"
       className="options"
-      type="number"
       select
-      label={label}
+      label={`Choose your ${category} exercises.`}
       value={value}
-      onChange={change}
+      onChange={handleOnChange}
       variant="outlined"
     >
-      {bodyPart.map((option: string) => (
-        <MenuItem key={option} value={option}>
-          {option}
-        </MenuItem>
-      ))}
+      {exercises
+        .filter((exercise) => exercise.category === category)
+        .map((option: Exercise) => (
+          <MenuItem key={option.id} value={option.id}>
+            {option.name}
+          </MenuItem>
+        ))}
     </TextField>
   );
 };
-
-// ExerciseOptions.propTypes = {
-//     legWorkout: PropTypes.string.isRequired,
-//     handleChange: PropTypes.number.isRequired,
-//     bodyPart: PropTypes.Array.isRequired
-//   };

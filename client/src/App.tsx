@@ -7,19 +7,6 @@ import Button from "@material-ui/core/Button";
 
 export const App = () => {
   const [newWorkout, setNewWorkout] = useState(false);
-
-  async function callAPI() {
-    const url = '/api/exercises';
-    const result = await fetch(url);
-    console.log(result.json());
-  }
-
-  try {
-    callAPI();
-  } catch (err){
-    console.log(err)
-  }
-
   return (
     <>
       {/* <Menu /> */}
