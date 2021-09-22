@@ -3,6 +3,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import { Link } from "react-router-dom";
 
 const options = [
   'Account', "Logout"
@@ -24,7 +25,7 @@ export default function LongMenu() {
 
   return (
     <div className="long-menu">
-      <h2>SESSION</h2>
+      <h2><Link to="/">SESSION</Link></h2>
       <IconButton
         aria-label="more"
         aria-controls="long-menu"

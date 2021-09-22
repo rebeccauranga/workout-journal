@@ -1,6 +1,6 @@
 import { MenuItem, TextField, InputAdornment, Button } from "@material-ui/core";
 import SaveIcon from "@material-ui/icons/Save";
-import { useState, ChangeEvent, useEffect } from "react";
+import { useState, ChangeEvent, useEffect, } from "react";
 import { ExerciseOptions } from "./exercise-options";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
@@ -11,6 +11,13 @@ import {
   // ExerciseCategory,
   ExerciseConfiguration,
 } from "../../shared/models";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  useRouteMatch,
+} from "react-router-dom";
 
 export enum ExerciseCategory {
   LowerBody = "Lower Body",
@@ -18,22 +25,26 @@ export enum ExerciseCategory {
   Cardio = "Cardio",
 }
 
-export const Input = () => {
+export const CreateWorkout = () => {
+  const match = useRouteMatch();
   const [category, setCategory] = useState<ExerciseCategory>();
   const [exercise, setExercise] = useState<Exercise>();
   const [sets, setSets] = useState<number>();
   const [reps, setReps] = useState<number>();
   const [durationSeconds, setDurationSeconds] = useState<number>();
   const [savedExercise, setSavedExercise] = useState(false);
-  const [exerciseConfigs, setExerciseConfigs] = useState<ExerciseConfiguration[]>([]);
+  const [exerciseConfigs, setExerciseConfigs] = useState<
+    ExerciseConfiguration[]
+  >([]);
   const [exercises, setExercises] = useState([]);
+
+  // let {path, url} = useRouteMatch();
 
   async function callAPI() {
     const url = "/api/exercises";
     const result = await fetch(url);
     const exercises = await result.json();
     setExercises(exercises);
-    console.log(exercises[0]);
   }
 
   useEffect(() => {
@@ -61,7 +72,9 @@ export const Input = () => {
     setReps(parseInt(event.target.value));
   };
 
-  const handleOnDurationSecondsChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleOnDurationSecondsChange = (
+    event: ChangeEvent<HTMLInputElement>
+  ) => {
     setDurationSeconds(parseInt(event.target.value));
   };
 
@@ -77,58 +90,70 @@ export const Input = () => {
             onChange={handleChangeCategory}
             variant="outlined"
           >
-            <MenuItem key={ExerciseCategory.LowerBody} value={ExerciseCategory.LowerBody}>
+            <MenuItem
+              key={ExerciseCategory.LowerBody}
+              value={ExerciseCategory.LowerBody}
+            >
               Lower Body
             </MenuItem>
-            <MenuItem key={ExerciseCategory.UpperBody} value={ExerciseCategory.UpperBody}>
+            <MenuItem
+              key={ExerciseCategory.UpperBody}
+              value={ExerciseCategory.UpperBody}
+            >
               Upper Body
             </MenuItem>
-            <MenuItem key={ExerciseCategory.Cardio} value={ExerciseCategory.Cardio}>
+            <MenuItem
+              key={ExerciseCategory.Cardio}
+              value={ExerciseCategory.Cardio}
+            >
               Cardio
             </MenuItem>
           </TextField>
           <br />
-          {category && <ExerciseOptions
+          {category && (
+            <ExerciseOptions
               category={category}
               value={exercise && exercise.name}
               onSelectExercise={setExercise}
               exercises={exercises}
             />
-          }
+          )}
         </div>
         <br />
-        {exercise && (category === ExerciseCategory.LowerBody || category === ExerciseCategory.UpperBody) && (
-          <div className="sets-and-reps">
-            <div className="sets">
+        {exercise &&
+          (category === ExerciseCategory.LowerBody ||
+            category === ExerciseCategory.UpperBody) && (
+            <div className="sets-and-reps">
+              <div className="sets">
+                <TextField
+                  label=""
+                  id="sets"
+                  type="number"
+                  onChange={handleOnSetsChange}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">Sets</InputAdornment>
+                    ),
+                  }}
+                  variant="outlined"
+                />
+              </div>
+              <br />
               <TextField
                 label=""
-                id="sets"
+                id="reps"
                 type="number"
-                onChange={handleOnSetsChange}
+                onChange={handleOnRepsChange}
                 InputProps={{
                   startAdornment: (
-                    <InputAdornment position="start">Sets</InputAdornment>
+                    <InputAdornment position="start">Reps</InputAdornment>
                   ),
                 }}
                 variant="outlined"
               />
+              <br />
             </div>
-            <br />
-            <TextField
-              label=""
-              id="reps"
-              type="number"
-              onChange={handleOnRepsChange}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">Reps</InputAdornment>
-                ),
-              }}
-              variant="outlined"
-            />
-            <br />
-          </div>
-        )}
+          )}
         {category === ExerciseCategory.Cardio && exercise && (
           <TextField
             label=""

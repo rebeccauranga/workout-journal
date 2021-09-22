@@ -1,44 +1,37 @@
 import "./styles.css";
-import { Input } from "./input";
+import { CreateWorkout } from "./createWorkout";
 import LongMenu from "./menu";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import SimpleBottomNavigation from "./bottom-nav";
 import Button from "@material-ui/core/Button";
+import { SignIn } from "./signin";
+import { Home } from "./home";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { CreateAnAccount } from "./createAnAccount";
 
 export const App = () => {
-  const [newWorkout, setNewWorkout] = useState(false);
   return (
-    <>
-      {/* <Menu /> */}
+    <Router>
       <div className="content">
-        <div className="header">
+        {/* <div className="header">
           <LongMenu />
-          {!newWorkout && (
-            <>
-          <h1>
-            <b>
-              <i>SESSION</i>
-            </b>
-          </h1>
-          <h3>create, track, and save your workouts</h3>
-            <div className="new">
-              <Button
-                variant="outlined"
-                color="primary"
-                onClick={() => setNewWorkout(true)}
-              >
-                NEW WORKOUT
-              </Button>
-            </div>
-              <Button variant="outlined" color="secondary">
-                view workouts
-              </Button>
-            </>
-          )}
-        </div>
-        {newWorkout && <Input />}
+        </div> */}
+        <Switch>
+          <Route exact path="/">
+            <SignIn />
+          </Route>
+          <Route exact path={"/workouts/new"}>
+            <CreateWorkout />
+          </Route>
+          <Route path="/workouts">
+            <Home />
+          </Route>
+          <Route path="/new-account">
+            <CreateAnAccount />
+          </Route>
+        </Switch>
       </div>
-      <SimpleBottomNavigation />
-    </>
+      {/* <SimpleBottomNavigation /> */}
+    </Router>
   );
 };
