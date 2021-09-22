@@ -1,13 +1,15 @@
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
+import { Exercise } from "../../shared/models";
+import { listExercises } from "./db/db";
+
 const app = express();
 const port = 3000;
-import { listExercises } from "./db/db";
 
 app.get("/", (req, res) => {
   res.send("hello world");
 });
 
-app.get("/api/exercises", async (req, res, next) => {
+app.get("/api/exercises", async (req: Request, res: Response<Exercise[]>, next: NextFunction) => {
   const exercises = await listExercises();
   res.json(exercises);
 });
