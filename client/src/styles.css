@@ -7,7 +7,7 @@ body {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-  margin-top: 50%;
+  margin-top: 15%;
 }
 
 .header {
@@ -99,4 +99,8 @@ li {
 .new {
   margin-bottom: 25px;
   margin-top: 25px;
+}
+
+.signin {
+
 }

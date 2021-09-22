@@ -1,4 +1,4 @@
-import { MenuItem, TextField, useScrollTrigger } from "@material-ui/core";
+import { MenuItem, TextField } from "@material-ui/core";
 import { ChangeEvent } from "react";
 import { Exercise, ExerciseCategory } from "../../shared/models";
 
