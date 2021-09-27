@@ -20,7 +20,9 @@ export const ExerciseOptions = ({
     const selectedExercise = exercises.find(
       (exercise) => exercise.id === selectedExerciseId
     );
-    onSelectExercise(selectedExercise);
+    if (selectedExercise) {
+      onSelectExercise(selectedExercise);
+    }
   };
 
   if (!exercises) {
