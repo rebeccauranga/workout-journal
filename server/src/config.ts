@@ -6,6 +6,8 @@ interface Config {
   dbName: string;
   dbPassword: string;
   dbPort: number;
+  host: string;
+  clientHost: string;
 }
 
 const config: Config = {
@@ -16,6 +18,8 @@ const config: Config = {
   dbName: process.env.DB_NAME as string,
   dbPassword: process.env.DB_PASSWORD as string,
   dbPort: parseInt(process.env.DB_PORT as string),
+  host: process.env.SERVER_HOST as string,
+  clientHost: process.env.CLIENT_HOST as string
 };
 
 if (!config.googleClientId) {
@@ -44,6 +48,14 @@ if (!config.dbPassword) {
 
 if (!config.dbPort) {
   throw new Error("Port is missing");
+}
+
+if (!config.host) {
+  throw new Error("Server host is missing");
+}
+
+if (!config.clientHost) {
+  throw new Error("Client host is missing")
 }
 
 export default config;
