@@ -139,7 +139,7 @@ function seedExercises(exercises: Exercise[]) {
     const sql =
       "INSERT INTO exercises(id, category, name, description, video_url) VALUES($1, $2, $3, $4, $5) RETURNING *";
     const values = [id, category, name, description, video_url];
-    const res = await pool.query(sql, values);
+    await pool.query(sql, values);
   });
 }
 
