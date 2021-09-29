@@ -17,3 +17,10 @@ export interface ExerciseConfiguration {
   sets: number;
   reps: number;
 }
+
+export interface User {
+  email: string;
+  id: string;
+  photo_url: string;
+  created_at: Date;
+}
