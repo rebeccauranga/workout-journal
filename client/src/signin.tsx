@@ -13,7 +13,7 @@ export const SignIn = () => {
       </h1>
       <h3>create, track, and save your workouts</h3>
       <h2>Please sign in</h2>
-      <TextField
+      {/* <TextField
         required
         id="outlined-required"
         label="Username"
@@ -25,10 +25,11 @@ export const SignIn = () => {
         label="Password"
         type="password"
         autoComplete="current-password"
-      />
+      /> */}
       <br />
-      <button>Sign In</button>
-      <Link to={"/new-account"}>Create an account</Link>
+      {/* <button>Sign In with Google</button> */}
+      {/* <Link to={"http://localhost:3000/auth/google"}>Sign in with Google</Link> */}
+      <button onClick={() => window.location.href = "/auth/google"}>Sign in with Google</button>
     </div>
   );
 };
