@@ -1,6 +1,5 @@
 import express, { Request, Response } from "express";
 import session from "express-session";
-import cookieParser from "cookie-parser";
 import passport from "passport";
 import passportGoogleOauth from "passport-google-oauth";
 
@@ -28,8 +27,6 @@ app.use(
   })
 );
 
-
-app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json());
 app.use(passport.initialize());
