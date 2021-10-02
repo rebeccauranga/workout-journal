@@ -1,37 +1,73 @@
+import React from "react";
 import "./styles.css";
 import { CreateWorkout } from "./createWorkout";
-import LongMenu from "./menu";
-import React, { useState } from "react";
-import SimpleBottomNavigation from "./bottom-nav";
-import Button from "@material-ui/core/Button";
 import { SignIn } from "./signin";
 import { Home } from "./home";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  RouteProps,
+  Redirect,
+} from "react-router-dom";
 import { CreateAnAccount } from "./createAnAccount";
+import { ProvideAuth, useAuth } from "./auth";
+import NavBar from "./navbar";
+import { User } from "../../shared/models";
 
 export const App = () => {
   return (
-    <Router>
-      <div className="content">
-        {/* <div className="header">
-          <LongMenu />
-        </div> */}
-        <Switch>
-          <Route exact path="/">
-            <SignIn />
-          </Route>
-          <Route exact path={"/workouts/new"}>
-            <CreateWorkout />
-          </Route>
-          <Route path="/workouts">
-            <Home />
-          </Route>
-          <Route path="/new-account">
-            <CreateAnAccount />
-          </Route>
-        </Switch>
-      </div>
-      {/* <SimpleBottomNavigation /> */}
-    </Router>
+    <>
+      <ProvideAuth>
+        <Router>
+          <NavBar />
+          <Routes />
+        </Router>
+      </ProvideAuth>
+    </>
+  );
+};
+
+interface PrivateRouteProps extends RouteProps {
+  user?: User;
+}
+
+const PrivateRoute: React.FC<PrivateRouteProps> = ({
+  children,
+  ...rest
+}) => {
+  const auth = useAuth();
+  return auth.loaded ? (
+    <Route
+      {...rest}
+      render={() => {
+        return auth.user ? children : <Redirect to="/signin" />;
+      }}
+    />
+  ) : null;
+};
+
+const Routes: React.FC = () => {
+  const auth = useAuth();
+  const defaultRoute = (): React.ReactNode => {
+    return auth.user ? <Redirect to="/workouts" /> : <SignIn />;
+  };
+
+  return (
+    <div className="content">
+      <Switch>
+        <Route exact path="/signin" render={defaultRoute} />
+        <PrivateRoute exact path={"/workouts/new"}>
+          <CreateWorkout />
+        </PrivateRoute>
+        <PrivateRoute exact path="/workouts">
+          <Home />
+        </PrivateRoute>
+        <Route path="/new-account">
+          <CreateAnAccount />
+        </Route>
+        <Route path="/" render={defaultRoute} />
+      </Switch>
+    </div>
   );
 };
