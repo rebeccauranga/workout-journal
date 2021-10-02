@@ -1,6 +1,6 @@
-import pool from "./config";
 import { v4 as uuidv4 } from "uuid";
 import { Exercise, ExerciseCategory } from "../../../shared/models";
+import { createExercise, findExerciseByName } from "./exercises";
 
 const exercises: Exercise[] = [
   {
@@ -131,15 +131,21 @@ const exercises: Exercise[] = [
       "A lunge can refer to any position of the human body where one leg is positioned forward with knee bent and foot flat on the ground while the other leg is positioned behind.",
     video_url: "https://youtu.be/U3HlEF_E9fo",
   },
+  {
+    id: uuidv4(),
+    category: ExerciseCategory.Cardio,
+    name: "Bullshit",
+    description:
+      "A lunge can refer to any position of the human body where one leg is positioned forward with knee bent and foot flat on the ground while the other leg is positioned behind.",
+    video_url: "https://youtu.be/U3HlEF_E9fo",
+  },
 ];
 
-
 function seedExercises(exercises: Exercise[]) {
-  exercises.forEach(async ({ id, category, name, description, video_url }) => {
-    const sql =
-      "INSERT INTO exercises(id, category, name, description, video_url) VALUES($1, $2, $3, $4, $5) RETURNING *";
-    const values = [id, category, name, description, video_url];
-    await pool.query(sql, values);
+  exercises.forEach(async (exercise) => {
+    if (!(await findExerciseByName(exercise.name))) {
+      await createExercise(exercise);
+    }
   });
 }
 
