@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { Request, Response, NextFunction } from "express";
 import session from "express-session";
 import passport from "passport";
 import passportGoogleOauth from "passport-google-oauth";
@@ -19,18 +19,37 @@ app.use(
     secret: "keyboardcat",
     resave: false,
     saveUninitialized: true,
-    cookie: { 
-      httpOnly: true, 
-      secure: process.env.NODE_ENV === "production", 
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
       sameSite: true,
     },
   })
 );
 
-app.use(express.urlencoded({ extended: false }))
+function logger(req: Request, _: Response, next: NextFunction) {
+  if (process.env.NODE_ENV === "development") {
+    const user: User | undefined = req.user as User;
+    console.log(`[${req.method}] ${req.url} ${user?.email || ""}`);
+  }
+  next();
+}
+
+function requireAuth(req: Request, res: Response, next: NextFunction) {
+  if (!req.user) {
+    res.status(401).json({ message: "login required" });
+    return;
+  } else {
+    next();
+  }
+}
+
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(logger);
+app.use("/api", requireAuth);
 
 passport.serializeUser(function (user, done) {
   done(null, (user as User).id);
@@ -55,7 +74,7 @@ passport.use(
     {
       clientID: config.googleClientId,
       clientSecret: config.googleClientSecret,
-      callbackURL: `${config.host}/auth/google/callback`, 
+      callbackURL: `${config.host}/auth/google/callback`,
     },
     async function (_: string, __: string, profile: passport.Profile, done) {
       const emails = profile.emails || [];
@@ -69,7 +88,7 @@ passport.use(
 
       try {
         const user = await findOrCreateUser(
-          email as string,  
+          email as string,
           photoUrl as string
         );
         done(null, user);
@@ -109,15 +128,24 @@ app.get(
     session: true,
   }),
   function (_: Request, res: Response) {
-    res.redirect(`${config.clientHost}/workouts`);
+    res.redirect(`${config.clientHost}/`);
   }
 );
+
+app.get("/api/user", (req, res) => {
+  const user = req.user;
+  res.json(user);
+});
+
+app.get("/api/user/logout", (req, res) => {
+  req.logOut();
+  res.send();
+});
 
 app.get("/api/exercises", async (_: Request, res: Response<Exercise[]>) => {
   const exercises = await listExercises();
   res.json(exercises);
 });
-
 
 app.listen(port, () => {
   console.log(`server started at ${port}`);
