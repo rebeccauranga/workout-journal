@@ -7,7 +7,7 @@ const exercisesDDL = `
         name VARCHAR(50) UNIQUE,
         description TEXT,
         video_url VARCHAR(255)
-    )
+    );
 `;
 
 const usersDDL = `
@@ -16,12 +16,34 @@ const usersDDL = `
       email VARCHAR(50) UNIQUE NOT NULL,
       photo_url TEXT,
       created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-    )
+    );
 `;
 
-const schema = [exercisesDDL, usersDDL];
+const workoutsDDL = `
+    CREATE TABLE IF NOT EXISTS workouts (
+      id UUID PRIMARY KEY NOT NULL,
+      name VARCHAR(100) NOT NULL,
+      favorite BOOLEAN DEFAULT FALSE,
+      user_id UUID NOT NULL REFERENCES users(id),
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE(name, user_id)
+    );
+`;
 
-schema.forEach(async (ddl) => {
-  const res = await pool.query(ddl);
-  console.log(res);
-});
+const workoutExercisesDDL = `
+    CREATE TABLE IF NOT EXISTS workout_exercises (
+      workout_id UUID NOT NULL REFERENCES workouts(id),
+      exercise_id UUID NOT NULL REFERENCES exercises(id),
+      sets INTEGER,
+      reps INTEGER,
+      duration_minutes INTEGER,
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      PRIMARY KEY(workout_id, exercise_id)
+    );
+`;
+
+const schema = [usersDDL, workoutsDDL, exercisesDDL, workoutExercisesDDL];
+(async () => {
+  const promises = schema.map(async (ddl) => await pool.query(ddl));
+  await Promise.all(promises);
+})();
