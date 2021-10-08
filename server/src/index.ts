@@ -4,9 +4,11 @@ import passport from "passport";
 import passportGoogleOauth from "passport-google-oauth";
 
 import config from "./config";
-import { Exercise, User } from "../../shared/models";
+import { Exercise, User, CreateWorkoutRequest } from "../../shared/models";
 import { listExercises } from "./db/db";
 import { findOrCreateUser, findUserById } from "./db/users";
+import { createWorkout } from "./db/workouts";
+import { InvalidArgumentError } from "./errors";
 
 const app = express();
 const port = 3000;
@@ -146,6 +148,25 @@ app.get("/api/exercises", async (_: Request, res: Response<Exercise[]>) => {
   const exercises = await listExercises();
   res.json(exercises);
 });
+
+app.post(
+  "/api/workouts",
+  async (req: Request<CreateWorkoutRequest>, res: Response) => {
+    const workout: CreateWorkoutRequest = req.body;
+    const user: User = req.user as User;
+    try {
+      await createWorkout(workout, user.id);
+      res.json({ message: `Successfully created ${workout.name}` });
+    } catch (e) {
+      if (e instanceof InvalidArgumentError) {
+        res.status(400).json({ message: e.message });
+      } else {
+        console.error(e);
+        res.status(500).send();
+      }
+    }
+  }
+);
 
 app.listen(port, () => {
   console.log(`server started at ${port}`);
