@@ -1,15 +1,17 @@
 import { MenuItem, TextField, InputAdornment, Button } from "@material-ui/core";
 import SaveIcon from "@material-ui/icons/Save";
-import { useState, ChangeEvent, useEffect, } from "react";
+import { useState, ChangeEvent, useEffect } from "react";
 import { ExerciseOptions } from "./exercise-options";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import {
+  CreateWorkoutRequest,
   Exercise,
   // ExerciseCategory,
   ExerciseConfiguration,
+  Workout,
 } from "../../shared/models";
 import {
   BrowserRouter as Router,
@@ -17,6 +19,7 @@ import {
   Route,
   Link,
   useRouteMatch,
+  useHistory,
 } from "react-router-dom";
 
 export enum ExerciseCategory {
@@ -26,12 +29,13 @@ export enum ExerciseCategory {
 }
 
 export const CreateWorkout = () => {
-  const match = useRouteMatch();
+  const history = useHistory();
   const [category, setCategory] = useState<ExerciseCategory>();
   const [exercise, setExercise] = useState<Exercise>();
-  const [sets, setSets] = useState<number>();
-  const [reps, setReps] = useState<number>();
-  const [durationSeconds, setDurationSeconds] = useState<number>();
+  const [name, setName] = useState<string>("");
+  const [sets, setSets] = useState<number>(1);
+  const [reps, setReps] = useState<number>(1);
+  const [durationMinutes, setDurationMinutes] = useState<number>(60);
   const [savedExercise, setSavedExercise] = useState(false);
   const [exerciseConfigs, setExerciseConfigs] = useState<
     ExerciseConfiguration[]
@@ -56,8 +60,42 @@ export const CreateWorkout = () => {
   }, []);
 
   const handleChangeSave = () => {
+    const exerciseConfiguration: ExerciseConfiguration = {
+      exercise: exercise as Exercise,
+      sets,
+      reps,
+      durationMinutes,
+    };
     setSavedExercise(true);
-    setExerciseConfigs([...exerciseConfigs, { exercise, sets, reps }]);
+    setExerciseConfigs([...exerciseConfigs, exerciseConfiguration]);
+  };
+
+  const handleSaveWorkout = async () => {
+    try {
+      const data: CreateWorkoutRequest = {
+        name: name,
+        exercises: exerciseConfigs,
+      };
+      const response = await fetch("/api/workouts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      const resp = await response.json();
+      alert(resp.message);
+      if (response.status === 200) {
+        history.push("/workouts");
+      }
+    } catch (e) {
+      console.error("create workout: ", e);
+    }
+  };
+
+  const handleChangeName = (event: ChangeEvent<HTMLInputElement>) => {
+    setName(event.target.value);
+    console.log("workout name: ", name);
   };
 
   const handleChangeCategory = (event: ChangeEvent<HTMLInputElement>) => {
@@ -72,16 +110,23 @@ export const CreateWorkout = () => {
     setReps(parseInt(event.target.value));
   };
 
-  const handleOnDurationSecondsChange = (
+  const handleOnDurationMinutesChange = (
     event: ChangeEvent<HTMLInputElement>
   ) => {
-    setDurationSeconds(parseInt(event.target.value));
+    setDurationMinutes(parseInt(event.target.value));
   };
 
   return (
     <>
       <div className="inputs">
         <div className="splitstuff">
+          <TextField
+            id="outlined-basic"
+            label="Workout name"
+            variant="outlined"
+            onChange={handleChangeName}
+          />
+          <br />
           <TextField
             id="outlined-select-currency"
             select
@@ -158,10 +203,13 @@ export const CreateWorkout = () => {
           <TextField
             label=""
             id="time"
-            onChange={handleOnDurationSecondsChange}
+            type="number"
+            onChange={handleOnDurationMinutesChange}
             InputProps={{
               startAdornment: (
-                <InputAdornment position="start">Duration</InputAdornment>
+                <InputAdornment position="start">
+                  Duration (minutes)
+                </InputAdornment>
               ),
             }}
             variant="outlined"
@@ -169,7 +217,7 @@ export const CreateWorkout = () => {
         )}
         <br />
         {(sets && reps && category !== ExerciseCategory.Cardio) ||
-        (durationSeconds && category === ExerciseCategory.Cardio) ? (
+        (durationMinutes && category === ExerciseCategory.Cardio) ? (
           <>
             <Fab
               size="medium"
@@ -189,24 +237,32 @@ export const CreateWorkout = () => {
         <div className="saved">
           <div>
             <ul>
-              {exerciseConfigs.map(({ exercise, sets, reps }, index) => {
-                return (
-                  exercise && (
-                    <div key={index}>
-                      <li key={index}>
-                        <span>
-                          {exercise.name} {sets} sets of {reps}
-                        </span>
-                        <button className="delete-exercise-btn">
-                          <IconButton aria-label="delete">
-                            <DeleteIcon />
-                          </IconButton>
-                        </button>
-                      </li>
-                    </div>
-                  )
-                );
-              })}
+              {exerciseConfigs.map(
+                ({ exercise, sets, reps, durationMinutes }, index) => {
+                  return (
+                    exercise && (
+                      <div key={index}>
+                        <li key={index}>
+                          {exercise.category === ExerciseCategory.Cardio ? (
+                            <span>
+                              {exercise.name} for {durationMinutes} minutes
+                            </span>
+                          ) : (
+                            <span>
+                              {exercise.name} {sets} sets of {reps}
+                            </span>
+                          )}
+                          <button className="delete-exercise-btn">
+                            <IconButton aria-label="delete">
+                              <DeleteIcon />
+                            </IconButton>
+                          </button>
+                        </li>
+                      </div>
+                    )
+                  );
+                }
+              )}
             </ul>
           </div>
           <br />
@@ -215,6 +271,7 @@ export const CreateWorkout = () => {
             color="primary"
             size="large"
             startIcon={<SaveIcon />}
+            onClick={handleSaveWorkout}
           >
             Save workout
           </Button>
