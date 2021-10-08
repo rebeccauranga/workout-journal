@@ -16,6 +16,7 @@ export interface ExerciseConfiguration {
   exercise: Exercise;
   sets: number;
   reps: number;
+  durationMinutes: number;
 }
 
 export interface CreateWorkoutRequest {
