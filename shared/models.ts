@@ -18,6 +18,11 @@ export interface ExerciseConfiguration {
   reps: number;
 }
 
+export interface CreateWorkoutRequest {
+  name: string;
+  exercises: ExerciseConfiguration[];
+}
+
 export interface User {
   email: string;
   id: string;
