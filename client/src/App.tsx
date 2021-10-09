@@ -3,6 +3,7 @@ import "./styles.css";
 import { CreateWorkout } from "./createWorkout";
 import { SignIn } from "./signin";
 import { Home } from "./home";
+import WorkoutDetail from "./WorkoutDetail";
 import {
   BrowserRouter as Router,
   Switch,
@@ -62,6 +63,9 @@ const Routes: React.FC = () => {
         </PrivateRoute>
         <PrivateRoute exact path="/workouts">
           <Home />
+        </PrivateRoute>
+        <PrivateRoute exact path="/workouts/:id">
+          <WorkoutDetail />
         </PrivateRoute>
         <Route path="/new-account">
           <CreateAnAccount />
