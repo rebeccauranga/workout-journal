@@ -1,29 +1,44 @@
 import "./styles.css";
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "@material-ui/core/Button";
 import { Link } from "react-router-dom";
-
+import { Workout } from "../../shared/models";
 
 export const Home = () => {
-  //   const [newWorkout, setNewWorkout] = useState(false);
+  const [workouts, setWorkouts] = useState<Workout[]>([]);
+
+  const getWorkouts = async () => {
+    const response = await fetch("/api/workouts");
+    if (response.status === 200) {
+      const data = await response.json();
+      setWorkouts(data);
+    } else {
+      console.log(response);
+    }
+  };
+
+  useEffect(() => {
+    getWorkouts();
+  }, []);
+
   return (
     <>
       <div className="content">
         <div className="header">
-          {/* <LongMenu /> */}
           <>
             <div className="new">
-              <Button
-                variant="outlined"
-                color="primary"
-                // onClick={() => setNewWorkout(true)}
-              >
+              <Button variant="outlined" color="primary">
                 <Link to="/workouts/new">NEW WORKOUT</Link>
               </Button>
+
+              {workouts.map((workout) => {
+                return (
+                  <Button key={workout.id} variant="outlined" color="primary">
+                    <Link to={`/workouts/${workout.id}`}>{workout.name}</Link>
+                  </Button>
+                );
+              })}
             </div>
-            <Button variant="outlined" color="secondary">
-              view workouts
-            </Button>
           </>
         </div>
       </div>
