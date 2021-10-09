@@ -4,10 +4,20 @@ import passport from "passport";
 import passportGoogleOauth from "passport-google-oauth";
 
 import config from "./config";
-import { Exercise, User, CreateWorkoutRequest } from "../../shared/models";
+import {
+  Exercise,
+  User,
+  CreateWorkoutRequest,
+  Workout,
+  WorkoutDetail,
+} from "../../shared/models";
 import { listExercises } from "./db/db";
 import { findOrCreateUser, findUserById } from "./db/users";
-import { createWorkout } from "./db/workouts";
+import {
+  createWorkout,
+  findWorkoutDetailById,
+  listWorkouts,
+} from "./db/workouts";
 import { InvalidArgumentError } from "./errors";
 
 const app = express();
@@ -164,6 +174,31 @@ app.post(
         console.error(e);
         res.status(500).send();
       }
+    }
+  }
+);
+
+app.get("/api/workouts", async (req: Request, res: Response<Workout[]>) => {
+  const user: User = req.user as User;
+  try {
+    const workouts = await listWorkouts(user.id);
+    res.json(workouts);
+  } catch (e) {
+    console.log(e);
+    res.status(500).send();
+  }
+});
+
+app.get(
+  "/api/workouts/:id",
+  async (req: Request<{ id: string }>, res: Response<WorkoutDetail>) => {
+    const workoutId = req.params.id;
+    try {
+      const workoutDetail = await findWorkoutDetailById(workoutId);
+      res.json(workoutDetail);
+    } catch (e) {
+      console.log(e);
+      res.status(500).send();
     }
   }
 );
