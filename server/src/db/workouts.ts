@@ -22,10 +22,9 @@ export async function createWorkout(
   try {
     await pool.query("BEGIN");
     const workoutId = await insertWorkout(createWorkoutRequest.name, userId);
-    const pending = createWorkoutRequest.exercises.map(async (exercise) => {
+    for (let exercise of createWorkoutRequest.exercises) {
       await insertWorkoutExercise(workoutId, exercise);
-    });
-    await Promise.all(pending);
+    }
     await pool.query("COMMIT");
   } catch (e) {
     await pool.query("ROLLBACK");
