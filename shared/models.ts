@@ -24,6 +24,27 @@ export interface CreateWorkoutRequest {
   exercises: ExerciseConfiguration[];
 }
 
+export interface Workout {
+  id: string;
+  name: string;
+  favorite: boolean;
+  user_id: string;
+  created_at: Date;
+}
+
+export interface WorkoutExercise {
+  workout_id: string;
+  exercise_id: string;
+  sets?: number;
+  reps?: number;
+  duration_minutes?: number;
+  created_at: Date;
+}
+
+export interface WorkoutDetail extends Workout{
+  exercises: WorkoutExercise[];
+}
+
 export interface User {
   email: string;
   id: string;
