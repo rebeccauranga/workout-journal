@@ -44,6 +44,7 @@ const workoutExercisesDDL = `
 
 const schema = [usersDDL, workoutsDDL, exercisesDDL, workoutExercisesDDL];
 (async () => {
-  const promises = schema.map(async (ddl) => await pool.query(ddl));
-  await Promise.all(promises);
+  for await (let ddl of schema) {
+    await pool.query(ddl);
+  }
 })();
