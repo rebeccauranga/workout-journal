@@ -9,15 +9,16 @@ import {
 import pool from "./config";
 import { InvalidArgumentError } from "../errors";
 
-
 export async function createWorkout(
   createWorkoutRequest: CreateWorkoutRequest,
   userId: string
 ): Promise<void> {
   const id = await findWorkoutByName(createWorkoutRequest.name, userId);
   if (id) {
-    throw new InvalidArgumentError(`Workout "${createWorkoutRequest.name}" already exists`);
-  };
+    throw new InvalidArgumentError(
+      `Workout "${createWorkoutRequest.name}" already exists`
+    );
+  }
 
   try {
     await pool.query("BEGIN");
