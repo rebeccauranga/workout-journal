@@ -2,7 +2,10 @@ import express, { Request, Response, NextFunction } from "express";
 import session from "express-session";
 import passport from "passport";
 import passportGoogleOauth from "passport-google-oauth";
+import connectPg from "connect-pg-simple";
+const postgresSession = connectPg(session);
 
+import pool from "./db/config";
 import config from "./config";
 import {
   Exercise,
@@ -31,10 +34,16 @@ app.use(
     secret: "keyboardcat",
     resave: false,
     saveUninitialized: true,
+    store: new postgresSession({
+      pool : pool,               
+      tableName : 'user_sessions', 
+      createTableIfMissing: true
+    }),
     cookie: {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: true,
+      maxAge: 60 * 1000 * 60 * 72
     },
   })
 );
