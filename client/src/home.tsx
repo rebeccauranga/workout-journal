@@ -31,13 +31,15 @@ export const Home = () => {
                 <Link to="/workouts/new">NEW WORKOUT</Link>
               </Button>
 
-              {workouts.map((workout) => {
-                return (
-                  <Button key={workout.id} variant="outlined" color="primary">
-                    <Link to={`/workouts/${workout.id}`}>{workout.name}</Link>
-                  </Button>
-                );
-              })}
+              <ul>
+                {workouts.map((workout) => {
+                  return (
+                    <li key={workout.id}>
+                      <Link to={`/workouts/${workout.id}`}>{workout.name}</Link>
+                    </li>
+                  );
+                })}
+              </ul>
             </div>
           </>
         </div>
