@@ -1,4 +1,4 @@
-import { Button,  } from "@material-ui/core";
+import { Button } from "@material-ui/core";
 
 export const SignIn = () => {
   return (
@@ -10,8 +10,6 @@ export const SignIn = () => {
       </h1>
       <h3>create, track, and save your workouts</h3>
       <br />
-      {/* <button>Sign In with Google</button> */}
-      {/* <Link to={"http://localhost:3000/auth/google"}>Sign in with Google</Link> */}
       <Button
         variant="outlined"
         color="primary"
