@@ -9,16 +9,11 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import {
   CreateWorkoutRequest,
   Exercise,
-  // ExerciseCategory,
   ExerciseConfiguration,
-  Workout,
+  // Workout,
 } from "../../shared/models";
 import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  useRouteMatch,
+  // BrowserRouter as Router
   useHistory,
 } from "react-router-dom";
 
@@ -33,16 +28,13 @@ export const CreateWorkout = () => {
   const [category, setCategory] = useState<ExerciseCategory>();
   const [exercise, setExercise] = useState<Exercise>();
   const [name, setName] = useState<string>("");
-  const [sets, setSets] = useState<number>(1);
-  const [reps, setReps] = useState<number>(1);
+  const [sets, setSets] = useState<number>(3);
+  const [reps, setReps] = useState<number>(10);
   const [durationMinutes, setDurationMinutes] = useState<number>(60);
-  const [savedExercise, setSavedExercise] = useState(false);
   const [exerciseConfigs, setExerciseConfigs] = useState<
     ExerciseConfiguration[]
   >([]);
-  const [exercises, setExercises] = useState([]);
-
-  // let {path, url} = useRouteMatch();
+  const [exercises, setExercises] = useState<Exercise[]>([]);
 
   async function callAPI() {
     const url = "/api/exercises";
@@ -59,14 +51,13 @@ export const CreateWorkout = () => {
     }
   }, []);
 
-  const handleChangeSave = () => {
+  const handleAddExercise = () => {
     const exerciseConfiguration: ExerciseConfiguration = {
       exercise: exercise as Exercise,
       sets,
       reps,
       durationMinutes,
     };
-    setSavedExercise(true);
     setExerciseConfigs([...exerciseConfigs, exerciseConfiguration]);
   };
 
@@ -95,7 +86,6 @@ export const CreateWorkout = () => {
 
   const handleChangeName = (event: ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
-    console.log("workout name: ", name);
   };
 
   const handleChangeCategory = (event: ChangeEvent<HTMLInputElement>) => {
@@ -116,6 +106,17 @@ export const CreateWorkout = () => {
     setDurationMinutes(parseInt(event.target.value));
   };
 
+  const removeFromList = (exerciseId: string): void => {
+    setExerciseConfigs(
+      exerciseConfigs.filter((exercise) => exercise.exercise.id !== exerciseId)
+    );
+  };
+
+  // adjust which exercises should be seen.
+  const selectedExerciseIds = exerciseConfigs.map((ec) => ec.exercise.id);
+  const selectableExercises = exercises.filter(
+    (ex) => !selectedExerciseIds.includes(ex.id)
+  );
   return (
     <>
       <div className="inputs">
@@ -158,9 +159,10 @@ export const CreateWorkout = () => {
           {category && (
             <ExerciseOptions
               category={category}
-              value={exercise && exercise.name}
+              value={exercise?.name}
               onSelectExercise={setExercise}
-              exercises={exercises}
+              exercises={selectableExercises}
+              disabled={selectableExercises.length === 0}
             />
           )}
         </div>
@@ -174,6 +176,7 @@ export const CreateWorkout = () => {
                   label=""
                   id="sets"
                   type="number"
+                  value={sets}
                   onChange={handleOnSetsChange}
                   InputProps={{
                     startAdornment: (
@@ -188,6 +191,7 @@ export const CreateWorkout = () => {
                 label=""
                 id="reps"
                 type="number"
+                value={reps}
                 onChange={handleOnRepsChange}
                 InputProps={{
                   startAdornment: (
@@ -204,6 +208,7 @@ export const CreateWorkout = () => {
             label=""
             id="time"
             type="number"
+            value={durationMinutes}
             onChange={handleOnDurationMinutesChange}
             InputProps={{
               startAdornment: (
@@ -223,7 +228,7 @@ export const CreateWorkout = () => {
               size="medium"
               color="secondary"
               aria-label="add"
-              onClick={() => handleChangeSave()}
+              onClick={() => handleAddExercise()}
               className={""}
             >
               <AddIcon />
@@ -233,7 +238,7 @@ export const CreateWorkout = () => {
           ""
         )}
       </div>{" "}
-      {savedExercise ? (
+      {exerciseConfigs.length > 0 ? (
         <div className="saved">
           <div>
             <ul>
@@ -254,7 +259,9 @@ export const CreateWorkout = () => {
                           )}
                           <button className="delete-exercise-btn">
                             <IconButton aria-label="delete">
-                              <DeleteIcon />
+                              <DeleteIcon
+                                onClick={() => removeFromList(exercise.id)}
+                              />
                             </IconButton>
                           </button>
                         </li>
