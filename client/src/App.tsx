@@ -11,7 +11,6 @@ import {
   RouteProps,
   Redirect,
 } from "react-router-dom";
-import { CreateAnAccount } from "./createAnAccount";
 import { ProvideAuth, useAuth } from "./auth";
 import NavBar from "./navbar";
 import { User } from "../../shared/models";
@@ -67,9 +66,6 @@ const Routes: React.FC = () => {
         <PrivateRoute exact path="/workouts/:id">
           <WorkoutDetail />
         </PrivateRoute>
-        <Route path="/new-account">
-          <CreateAnAccount />
-        </Route>
         <Route path="/" render={defaultRoute} />
       </Switch>
     </div>
