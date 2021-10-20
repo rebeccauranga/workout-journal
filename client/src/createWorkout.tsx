@@ -1,20 +1,14 @@
-import { MenuItem, TextField, InputAdornment, Button } from "@material-ui/core";
-import SaveIcon from "@material-ui/icons/Save";
 import { useState, ChangeEvent, useEffect } from "react";
+import { MenuItem, TextField, InputAdornment, Button, Fab, IconButton } from "@mui/material";
+import { Save as SaveIcon, Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import { ExerciseOptions } from "./exercise-options";
-import Fab from "@material-ui/core/Fab";
-import AddIcon from "@material-ui/icons/Add";
-import IconButton from "@material-ui/core/IconButton";
-import DeleteIcon from "@material-ui/icons/Delete";
 import {
   CreateWorkoutRequest,
   Exercise,
-  ExerciseConfiguration,
-  // Workout,
+  ExerciseConfiguration
 } from "../../shared/models";
 import {
-  // BrowserRouter as Router
-  useHistory,
+  useHistory
 } from "react-router-dom";
 
 export enum ExerciseCategory {
