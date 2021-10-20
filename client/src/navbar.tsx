@@ -7,9 +7,8 @@ import {
   Menu,
   MenuItem,
   Typography
-} from "@material-ui/core";
-import { AccountCircle } from "@material-ui/icons";
-import MenuIcon from "@material-ui/icons/Menu";
+} from "@mui/material";
+import { AccountCircle, Menu as MenuIcon } from "@mui/icons-material";
 import { useAuth } from "./auth";
 import { useHistory } from "react-router-dom";
 
