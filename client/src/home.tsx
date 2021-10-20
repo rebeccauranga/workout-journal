@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
 import { Workout } from "../../shared/models";
+import WorkoutCard from "./WorkoutCard";
 
 export const Home = () => {
   const [workouts, setWorkouts] = useState<Workout[]>([]);
@@ -31,15 +32,9 @@ export const Home = () => {
                 <Link to="/workouts/new">NEW WORKOUT</Link>
               </Button>
 
-              <ul>
-                {workouts.map((workout) => {
-                  return (
-                    <li key={workout.id}>
-                      <Link to={`/workouts/${workout.id}`}>{workout.name}</Link>
-                    </li>
-                  );
-                })}
-              </ul>
+              {workouts.map((workout) => {
+                return <WorkoutCard key={workout.id} workout={workout} />;
+              })}
             </div>
           </>
         </div>
