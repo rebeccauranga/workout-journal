@@ -42,7 +42,34 @@ const workoutExercisesDDL = `
     );
 `;
 
-const schema = [usersDDL, workoutsDDL, exercisesDDL, workoutExercisesDDL];
+const workoutSessionsDDL = `
+  CREATE TABLE IF NOT EXISTS workout_sessions (
+    id UUID PRIMARY KEY NOT NULL,
+    workout_id UUID REFERENCES workouts(id) NOT NULL,
+    user_id UUID REFERENCES users(id) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    completed_at TIMESTAMP
+  );
+`;
+
+const workoutSessionExercisesDDL = `
+CREATE TABLE IF NOT EXISTS workout_session_exercises (
+  session_id UUID REFERENCES workout_sessions(id) NOT NULL,
+  exercise_id UUID REFERENCES exercises(id) NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  completed_at TIMESTAMP,
+  PRIMARY KEY (session_id, exercise_id)
+);
+`;
+
+const schema = [
+  usersDDL,
+  workoutsDDL,
+  exercisesDDL,
+  workoutExercisesDDL,
+  workoutSessionsDDL,
+  workoutSessionExercisesDDL
+];
 (async () => {
   for await (let ddl of schema) {
     await pool.query(ddl);
