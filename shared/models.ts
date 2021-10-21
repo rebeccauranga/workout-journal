@@ -41,6 +41,14 @@ export interface WorkoutExercise {
   created_at: Date;
 }
 
+export interface WorkoutSession {
+  id: string;
+  workout_id: string;
+  user_id: string;
+  created_at: Date;
+  completed_at: Date;
+}
+
 export interface WorkoutDetail extends Workout{
   exercises: WorkoutExercise[];
 }
