@@ -21,6 +21,7 @@ import {
   findWorkoutDetailById,
   listWorkouts,
 } from "./db/workouts";
+import { createWorkoutSession } from "./db/workoutSession";
 import { InvalidArgumentError } from "./errors";
 
 const app = express();
@@ -207,6 +208,27 @@ app.get(
       res.json(workoutDetail);
     } catch (e) {
       console.log(e);
+      res.status(500).send();
+    }
+  }
+);
+
+app.post(
+  "/api/workouts/session",
+  async (
+    req: Request<{ workoutId: string }>,
+    res: Response<{ sessionId: string } | { message: string }>
+  ) => {
+    const workoutId = req.body.workoutId;
+    const user: User = req.user as User;
+    try {
+      const workoutSessionId = await createWorkoutSession(workoutId, user.id);
+      res.status(201).json({ sessionId: workoutSessionId });
+    } catch (e) {
+      if (e instanceof InvalidArgumentError) {
+        res.status(400).json({ message: e.message });
+      }
+      console.error(e);
       res.status(500).send();
     }
   }
