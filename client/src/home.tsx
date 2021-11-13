@@ -2,11 +2,14 @@ import "./styles.css";
 import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
-import { Workout } from "../../shared/models";
+import { Workout, WorkoutSession } from "../../shared/models";
 import WorkoutCard from "./WorkoutCard";
 
 export const Home = () => {
   const [workouts, setWorkouts] = useState<Workout[]>([]);
+  const [workoutSession, setWorkoutSession] = useState<
+    WorkoutSession | undefined
+  >();
 
   const getWorkouts = async () => {
     const response = await fetch("/api/workouts");
@@ -18,8 +21,17 @@ export const Home = () => {
     }
   };
 
+  const getActiveWorkoutSession = async () => {
+    const response = await fetch("/api/workouts/session");
+    if (response.status === 200) {
+      const data = await response.json();
+      setWorkoutSession(data);
+    }
+  };
+
   useEffect(() => {
     getWorkouts();
+    getActiveWorkoutSession();
   }, []);
 
   return (
@@ -32,8 +44,22 @@ export const Home = () => {
                 <Link to="/workouts/new">NEW WORKOUT</Link>
               </Button>
 
+              {workoutSession && (
+                <Button variant="outlined" color="primary">
+                  <Link to={`/session/${workoutSession?.id}`}>
+                    Current Session
+                  </Link>
+                </Button>
+              )}
+
               {workouts.map((workout) => {
-                return <WorkoutCard key={workout.id} workout={workout} />;
+                return (
+                  <WorkoutCard
+                    key={workout.id}
+                    workout={workout}
+                    session={workoutSession}
+                  />
+                );
               })}
             </div>
           </>
