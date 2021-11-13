@@ -13,6 +13,7 @@ import {
   CreateWorkoutRequest,
   Workout,
   WorkoutDetail,
+  WorkoutSession,
 } from "../../shared/models";
 import { listExercises } from "./db/db";
 import { findOrCreateUser, findUserById } from "./db/users";
@@ -21,7 +22,10 @@ import {
   findWorkoutDetailById,
   listWorkouts,
 } from "./db/workouts";
-import { createWorkoutSession } from "./db/workoutSession";
+import {
+  createWorkoutSession,
+  getActiveWorkoutSession,
+} from "./db/workoutSession";
 import { InvalidArgumentError } from "./errors";
 
 const app = express();
@@ -36,15 +40,15 @@ app.use(
     resave: false,
     saveUninitialized: true,
     store: new postgresSession({
-      pool : pool,               
-      tableName : 'user_sessions', 
-      createTableIfMissing: true
+      pool: pool,
+      tableName: "user_sessions",
+      createTableIfMissing: true,
     }),
     cookie: {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: true,
-      maxAge: 60 * 1000 * 60 * 72
+      maxAge: 60 * 1000 * 60 * 72,
     },
   })
 );
@@ -199,20 +203,6 @@ app.get("/api/workouts", async (req: Request, res: Response<Workout[]>) => {
   }
 });
 
-app.get(
-  "/api/workouts/:id",
-  async (req: Request<{ id: string }>, res: Response<WorkoutDetail>) => {
-    const workoutId = req.params.id;
-    try {
-      const workoutDetail = await findWorkoutDetailById(workoutId);
-      res.json(workoutDetail);
-    } catch (e) {
-      console.log(e);
-      res.status(500).send();
-    }
-  }
-);
-
 app.post(
   "/api/workouts/session",
   async (
@@ -229,6 +219,29 @@ app.post(
         res.status(400).json({ message: e.message });
       }
       console.error(e);
+      res.status(500).send();
+    }
+  }
+);
+
+app.get("/api/workouts/session", async (req: Request, res: Response<WorkoutSession | null>) => {
+  const user = req.user as User;
+  const activeSession = await getActiveWorkoutSession(user.id);
+  if (!activeSession) {
+    return res.status(404).json(null);
+  }
+  return res.json(activeSession);
+});
+
+app.get(
+  "/api/workouts/:id",
+  async (req: Request<{ id: string }>, res: Response<WorkoutDetail>) => {
+    const workoutId = req.params.id;
+    try {
+      const workoutDetail = await findWorkoutDetailById(workoutId);
+      res.json(workoutDetail);
+    } catch (e) {
+      console.log(e);
       res.status(500).send();
     }
   }
