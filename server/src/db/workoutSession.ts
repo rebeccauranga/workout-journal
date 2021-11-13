@@ -49,15 +49,12 @@ export async function createWorkoutSession(
   }
 }
 
-async function getActiveWorkoutSession(
+export async function getActiveWorkoutSession(
   userId: string
 ): Promise<WorkoutSession | null> {
   const sql =
     "SELECT id, workout_id, user_id, created_at, completed_at FROM workout_sessions WHERE user_id = $1 AND completed_at IS NULL";
   const values = [userId];
   const res = await pool.query(sql, values);
-  if (res.rows) {
-    return res.rows[0];
-  }
-  return null;
+  return (res.rows && res.rows[0]) ? res.rows[0] : null;
 }
