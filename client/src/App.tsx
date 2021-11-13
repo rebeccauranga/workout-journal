@@ -14,6 +14,7 @@ import {
 import { ProvideAuth, useAuth } from "./auth";
 import NavBar from "./navbar";
 import { User } from "../../shared/models";
+import SessionDetail from "./SessionDetail";
 
 export const App = () => {
   return (
@@ -65,6 +66,9 @@ const Routes: React.FC = () => {
         </PrivateRoute>
         <PrivateRoute exact path="/workouts/:id">
           <WorkoutDetail />
+        </PrivateRoute>
+        <PrivateRoute exact path="/session/:id">
+          <SessionDetail />
         </PrivateRoute>
         <Route path="/" render={defaultRoute} />
       </Switch>
