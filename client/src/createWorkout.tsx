@@ -1,7 +1,8 @@
-import { useState, ChangeEvent, useEffect } from "react";
+import { useState, ChangeEvent } from "react";
 import { MenuItem, TextField, InputAdornment, Button, Fab, IconButton } from "@mui/material";
 import { Save as SaveIcon, Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import { ExerciseOptions } from "./exercise-options";
+import { useExercises } from "./exercises-context";
 import {
   CreateWorkoutRequest,
   Exercise,
@@ -19,6 +20,7 @@ export enum ExerciseCategory {
 
 export const CreateWorkout = () => {
   const history = useHistory();
+  const { exercises } = useExercises();
   const [category, setCategory] = useState<ExerciseCategory>();
   const [exercise, setExercise] = useState<Exercise>();
   const [name, setName] = useState<string>("");
@@ -28,22 +30,6 @@ export const CreateWorkout = () => {
   const [exerciseConfigs, setExerciseConfigs] = useState<
     ExerciseConfiguration[]
   >([]);
-  const [exercises, setExercises] = useState<Exercise[]>([]);
-
-  async function callAPI() {
-    const url = "/api/exercises";
-    const result = await fetch(url);
-    const exercises = await result.json();
-    setExercises(exercises);
-  }
-
-  useEffect(() => {
-    try {
-      callAPI();
-    } catch (err) {
-      console.log(err);
-    }
-  }, []);
 
   const handleAddExercise = () => {
     const exerciseConfiguration: ExerciseConfiguration = {
