@@ -12,6 +12,7 @@ import {
   Redirect,
 } from "react-router-dom";
 import { ProvideAuth, useAuth } from "./auth";
+import { ProvideExercises } from "./exercises-context";
 import NavBar from "./navbar";
 import { User } from "../../shared/models";
 import SessionDetail from "./SessionDetail";
@@ -20,10 +21,12 @@ export const App = () => {
   return (
     <>
       <ProvideAuth>
-        <Router>
-          <NavBar />
-          <Routes />
-        </Router>
+        <ProvideExercises>
+          <Router>
+            <NavBar />
+            <Routes />
+          </Router>
+        </ProvideExercises>
       </ProvideAuth>
     </>
   );
@@ -33,10 +36,7 @@ interface PrivateRouteProps extends RouteProps {
   user?: User;
 }
 
-const PrivateRoute: React.FC<PrivateRouteProps> = ({
-  children,
-  ...rest
-}) => {
+const PrivateRoute: React.FC<PrivateRouteProps> = ({ children, ...rest }) => {
   const auth = useAuth();
   return auth.loaded ? (
     <Route
