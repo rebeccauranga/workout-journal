@@ -49,6 +49,23 @@ export interface WorkoutSession {
   completed_at: Date;
 }
 
+export interface WorkoutSessionExercise {
+  session_id: string;
+  exercise_id: string;
+  created_at: Date;
+  completed_at?: Date; // is this completed or not?
+}
+
+export interface WorkoutSessionDetailsResponse {
+  data?: {
+    session: WorkoutSession,
+    workout: Workout,
+    exerciseConfigs: WorkoutExercise[],
+    exerciseStatuses: WorkoutSessionExercise[],
+  };
+  error?: string;
+}
+
 export interface WorkoutDetail extends Workout{
   exercises: WorkoutExercise[];
 }
