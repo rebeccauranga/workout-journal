@@ -40,27 +40,31 @@ export const Home = () => {
         <div className="header">
           <>
             <div className="new">
-              <Button variant="outlined" color="primary">
-                <Link to="/workouts/new">NEW WORKOUT</Link>
-              </Button>
-
-              {workoutSession && (
+              <div className="workout-session-btns">
                 <Button variant="outlined" color="primary">
-                  <Link to={`/session/${workoutSession?.id}`}>
-                    Current Session
-                  </Link>
+                  <Link to="/workouts/new">NEW WORKOUT</Link>
                 </Button>
-              )}
 
-              {workouts.map((workout) => {
-                return (
-                  <WorkoutCard
-                    key={workout.id}
-                    workout={workout}
-                    session={workoutSession}
-                  />
-                );
-              })}
+                {workoutSession && (
+                  <Button variant="outlined" color="primary">
+                    <Link to={`/session/${workoutSession?.id}`}>
+                      Current Session
+                    </Link>
+                  </Button>
+                )}
+              </div>
+
+              <div className="workout-cards">
+                {workouts.map((workout) => {
+                  return (
+                    <WorkoutCard
+                      key={workout.id}
+                      workout={workout}
+                      session={workoutSession}
+                    />
+                  );
+                })}
+              </div>
             </div>
           </>
         </div>

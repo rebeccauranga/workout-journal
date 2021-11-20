@@ -7,7 +7,6 @@ body {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-  margin-top: 15%;
 }
 
 .header {
@@ -103,4 +102,25 @@ li {
 
 .signin {
 
+}
+
+.workout-cards {
+  display: grid;
+  grid-template-columns: 35% 35% 20%;
+}
+
+@media(max-width: 768px) {
+  .workout-cards {
+    grid-template-columns: 56% 44%;
+  }
+}
+@media(max-width: 416px) {
+  .workout-cards {
+    grid-template-columns: none;
+  }
+}
+
+.workout-session-btns {
+ display: flex;
+ justify-content: space-between;
 }
