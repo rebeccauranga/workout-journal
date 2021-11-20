@@ -14,17 +14,24 @@ import {
   Workout,
   WorkoutDetail,
   WorkoutSession,
+  WorkoutSessionDetailsResponse,
 } from "../../shared/models";
 import { listExercises } from "./db/db";
 import { findOrCreateUser, findUserById } from "./db/users";
 import {
   createWorkout,
+  findWorkoutById,
   findWorkoutDetailById,
   listWorkouts,
+  listWorkoutExercises,
 } from "./db/workouts";
 import {
   createWorkoutSession,
+  completeWorkoutSession,
   getActiveWorkoutSession,
+  getWorkoutSessionById,
+  getWorkoutSessionExercises,
+  toggleCompleteSessionExercise,
 } from "./db/workoutSession";
 import { InvalidArgumentError } from "./errors";
 
@@ -224,14 +231,64 @@ app.post(
   }
 );
 
-app.get("/api/workouts/session", async (req: Request, res: Response<WorkoutSession | null>) => {
-  const user = req.user as User;
-  const activeSession = await getActiveWorkoutSession(user.id);
-  if (!activeSession) {
-    return res.status(404).json(null);
+app.get(
+  "/api/workouts/session",
+  async (req: Request, res: Response<WorkoutSession | null>) => {
+    const user = req.user as User;
+    const activeSession = await getActiveWorkoutSession(user.id);
+    if (!activeSession) {
+      return res.status(404).json(null);
+    }
+    return res.json(activeSession);
   }
-  return res.json(activeSession);
-});
+);
+
+app.get(
+  "/api/workouts/session/:id/details",
+  async (req: Request, res: Response<WorkoutSessionDetailsResponse>) => {
+    const sessionId = req.params.id;
+    const workoutSession = await getWorkoutSessionById(sessionId);
+    if (!workoutSession) {
+      return res.status(404).json({ error: "Session not found" });
+    }
+
+    const workout = await findWorkoutById(workoutSession?.workout_id);
+    if (!workout) {
+      return res.status(404).json({ error: "Workout not found" });
+    }
+
+    const workoutExercises = await listWorkoutExercises(workout.id);
+    const exerciseStatuses = await getWorkoutSessionExercises(sessionId);
+    const body: WorkoutSessionDetailsResponse = {
+      data: {
+        session: workoutSession,
+        workout: workout,
+        exerciseConfigs: workoutExercises,
+        exerciseStatuses,
+      },
+    };
+
+    return res.json(body);
+  }
+);
+
+app.patch(
+  "/api/workouts/session/:id/completed",
+  async (req: Request, res: Response<WorkoutSession>) => {
+    const sessionId = req.params.id;
+    const updatedWorkoutSession = await completeWorkoutSession(sessionId);
+    return res.json(updatedWorkoutSession);
+  }
+);
+
+app.patch(
+  "/api/workouts/session/:sessionId/exercise/:exerciseId/toggle-complete",
+  async (req: Request, res: Response<{ completed_at: Date }>) => {
+    const { sessionId, exerciseId } = req.params;
+    const result = await toggleCompleteSessionExercise(sessionId, exerciseId);
+    return res.json(result);
+  }
+);
 
 app.get(
   "/api/workouts/:id",
