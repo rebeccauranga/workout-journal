@@ -12,6 +12,7 @@ import {
   WorkoutSession,
   WorkoutSessionExercise,
 } from "../../shared/models";
+import { fabRightStyles } from "./styles";
 import { useExercises } from "./exercises-context";
 
 const SessionDetail: React.FC = () => {
@@ -105,8 +106,11 @@ const SessionDetail: React.FC = () => {
             const status = exerciseStatuses.find(
               (es) => es.exercise_id === ec.exercise_id
             );
-            // TODO: use the correct units per exercise (duration, sets, reps).
-            const config = `${exercise.name} (${ec.sets} sets of ${ec.reps})`;
+
+            const config =
+              exercise.category === "Cardio"
+                ? `${exercise.name} (${ec.duration_minutes} minutes)`
+                : `${exercise.name} (${ec.sets} sets of ${ec.reps})`;
             return (
               <>
                 <FormControlLabel
@@ -125,6 +129,7 @@ const SessionDetail: React.FC = () => {
           })}
       </FormGroup>
       <Fab
+        style={fabRightStyles}
         color="secondary"
         aria-label="complete"
         onClick={handleCompleteWorkout}

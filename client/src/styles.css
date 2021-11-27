@@ -1,6 +1,6 @@
 body {
-  font-family: "Urbanist", sans-serif;
-  background-color: rgb(249, 249, 249);
+  font-family: "Avenir next", sans-serif;
+  margin: 0px;
 }
 
 .content {
@@ -16,28 +16,13 @@ body {
 }
 
 .inputs {
-  margin: 20px;
-}
-h1 {
-  color: #0236f7;
-    font-weight: 900;
-    margin-bottom: 0px;
-    letter-spacing: 10px;
-    font-size: 60px;
-}
-
-h3 {
-  font-weight: 300;
-  color: #0236f7;
-  margin-top: 0;
+  margin: 100px 20px 5px 20px;
 }
 
 .delete-exercise-btn {
   margin-left: 10%;
   border: none;
-  color: white;
 }
-
 
 .sets-and-reps {
   display: flex;
@@ -52,7 +37,6 @@ h3 {
   flex-direction: column;
   justify-content: space-between;
   margin: 0px 15px 0px 15px;
-  color: #0236f7;
   font-size: 18px;
 }
 
@@ -72,7 +56,6 @@ li {
 }
 
 .completed-exercise {
-  color: red;
 }
 
 .splitstuff {
@@ -101,7 +84,6 @@ li {
 }
 
 .signin {
-
 }
 
 .workout-cards {
@@ -109,18 +91,43 @@ li {
   grid-template-columns: 35% 35% 20%;
 }
 
-@media(max-width: 768px) {
+@media (max-width: 768px) {
   .workout-cards {
     grid-template-columns: 56% 44%;
   }
 }
-@media(max-width: 416px) {
+@media (max-width: 416px) {
   .workout-cards {
     grid-template-columns: none;
   }
 }
 
 .workout-session-btns {
- display: flex;
- justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
+}
+
+.workout-detail {
+  display: flex;
+  flex-direction: column;
+  padding: 0px 6% 40px 4%;
+  margin-top: 15px;
+}
+
+.workout-detail-name-date {
+  margin-bottom: 30px;
+}
+
+.workout-detail-name {
+  font-size: 32px;
+  margin-bottom: 5px;
+}
+
+.exercise-details {
+  display: flex;
+  justify-content: space-between;
+}
+
+.route-link {
+  text-decoration: none;
 }

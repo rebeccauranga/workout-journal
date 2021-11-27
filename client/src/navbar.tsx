@@ -1,4 +1,5 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 import {
   AppBar,
   Box,
@@ -6,11 +7,9 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Typography
+  Typography,
 } from "@mui/material";
-import { AccountCircle, Menu as MenuIcon } from "@mui/icons-material";
 import { useAuth } from "./auth";
-import { useHistory } from "react-router-dom";
 
 const NavBar = () => {
   const auth = useAuth();
@@ -33,17 +32,9 @@ const NavBar = () => {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" color="secondary">
-        <Toolbar>
-          <IconButton
-            size="medium"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="body1"  component="div">
+      <AppBar position="fixed" color="primary" enableColorOnDark>
+        <Toolbar sx={{ justifyContent: "space-between" }}>
+          <Typography variant="h5" component="div" onClick={() => history.push("/workouts")}>
             session
           </Typography>
 
@@ -56,7 +47,11 @@ const NavBar = () => {
                 color="inherit"
                 onClick={handleMenu}
               >
-                <AccountCircle />
+                <img
+                  alt="profile"
+                  src={auth.user.photo_url}
+                  style={{ borderRadius: "50px", width: "40px" }}
+                />
               </IconButton>
               <Menu
                 id="menu-appbar"
@@ -73,8 +68,6 @@ const NavBar = () => {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>My account</MenuItem>
                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
               </Menu>
             </div>
