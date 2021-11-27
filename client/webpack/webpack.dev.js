@@ -1,4 +1,3 @@
-const webpack = require("webpack");
 const path = require('path');
 
 module.exports = {
@@ -16,9 +15,5 @@ module.exports = {
     },
     historyApiFallback: true,
   },
-  plugins: [
-    new webpack.DefinePlugin({
-      "process.env.name": JSON.stringify("Vishwas"),
-    }),
-  ],
+  plugins: [],
 };
