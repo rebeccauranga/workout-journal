@@ -11,6 +11,11 @@ import {
   RouteProps,
   Redirect,
 } from "react-router-dom";
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import CssBaseline from "@mui/material/CssBaseline";
+import { ThemeProvider } from "@mui/material/styles";
+import { theme } from "./theme";
 import { ProvideAuth, useAuth } from "./auth";
 import { ProvideExercises } from "./exercises-context";
 import NavBar from "./navbar";
@@ -20,14 +25,21 @@ import SessionDetail from "./SessionDetail";
 export const App = () => {
   return (
     <>
-      <ProvideAuth>
-        <ProvideExercises>
-          <Router>
-            <NavBar />
-            <Routes />
-          </Router>
-        </ProvideExercises>
-      </ProvideAuth>
+      <ThemeProvider theme={theme}>
+        <ProvideAuth>
+          <ProvideExercises>
+            <Router>
+              <Box>
+                <CssBaseline/>
+                <NavBar />
+                <Container sx={{marginTop: "60px" }}>
+                  <Routes />
+                </Container>
+              </Box>
+            </Router>
+          </ProvideExercises>
+        </ProvideAuth>
+      </ThemeProvider>
     </>
   );
 };
@@ -55,23 +67,21 @@ const Routes: React.FC = () => {
   };
 
   return (
-    <div className="content">
-      <Switch>
-        <Route exact path="/signin" render={defaultRoute} />
-        <PrivateRoute exact path={"/workouts/new"}>
-          <CreateWorkout />
-        </PrivateRoute>
-        <PrivateRoute exact path="/workouts">
-          <Home />
-        </PrivateRoute>
-        <PrivateRoute exact path="/workouts/:id">
-          <WorkoutDetail />
-        </PrivateRoute>
-        <PrivateRoute exact path="/session/:id">
-          <SessionDetail />
-        </PrivateRoute>
-        <Route path="/" render={defaultRoute} />
-      </Switch>
-    </div>
+    <Switch>
+      <Route exact path="/signin" render={defaultRoute} />
+      <PrivateRoute exact path={"/workouts/new"}>
+        <CreateWorkout />
+      </PrivateRoute>
+      <PrivateRoute exact path="/workouts">
+        <Home />
+      </PrivateRoute>
+      <PrivateRoute exact path="/workouts/:id">
+        <WorkoutDetail />
+      </PrivateRoute>
+      <PrivateRoute exact path="/session/:id">
+        <SessionDetail />
+      </PrivateRoute>
+      <Route path="/" render={defaultRoute} />
+    </Switch>
   );
 };
