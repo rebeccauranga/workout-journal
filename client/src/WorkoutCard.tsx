@@ -4,12 +4,6 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import { Button, CardActionArea, CardActions } from "@mui/material";
-import {
-  Favorite as FavoriteIcon,
-  FavoriteBorderOutlined as FavoriteBorderOutlinedIcon,
-} from "@mui/icons-material";
-
-import { Workout, WorkoutSession } from "../../shared/models";
 
 interface WorkoutCardProps {
   workout: Workout;
@@ -39,8 +33,8 @@ const WorkoutCard: React.FC<WorkoutCardProps> = ({
   };
 
   return (
-    <Card sx={{ marginTop: "20px", width: "325px" }}>
-      <Link to={`/workouts/${workout.id}`}>
+    <Card sx={{ minWidth: "300px", minHeight: "100px", width: "70%", }}>
+      <Link to={`/workouts/${workout.id}`} style={{color: "inherit", textDecoration: "none"}}>
         <CardActionArea>
           <CardContent>
             <Typography gutterBottom variant="h6" component="div">
@@ -57,9 +51,6 @@ const WorkoutCard: React.FC<WorkoutCardProps> = ({
           disabled={Boolean(session)}
         >
           New session
-        </Button>
-        <Button size="small" color="secondary">
-          {workout.favorite ? <FavoriteIcon /> : <FavoriteBorderOutlinedIcon />}
         </Button>
       </CardActions>
     </Card>

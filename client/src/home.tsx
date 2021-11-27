@@ -1,11 +1,19 @@
 import "./styles.css";
 import { useEffect, useState } from "react";
-import Button from "@mui/material/Button";
-import { Link } from "react-router-dom";
+import Fab from "@mui/material/Fab";
+import AddIcon from "@mui/icons-material/Add";
+import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
+import Grid from "@mui/material/Grid";
+import Stack from "@mui/material/Stack";
+import { Typography } from "@mui/material";
+
+import { useHistory } from "react-router-dom";
 import { Workout, WorkoutSession } from "../../shared/models";
 import WorkoutCard from "./WorkoutCard";
+import { fabLeftStyles, fabRightStyles } from "./styles";
 
 export const Home = () => {
+  const history = useHistory();
   const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [workoutSession, setWorkoutSession] = useState<
     WorkoutSession | undefined
@@ -36,39 +44,46 @@ export const Home = () => {
 
   return (
     <>
-      <div className="content">
-        <div className="header">
-          <>
-            <div className="new">
-              <div className="workout-session-btns">
-                <Button variant="outlined" color="primary">
-                  <Link to="/workouts/new">NEW WORKOUT</Link>
-                </Button>
-
-                {workoutSession && (
-                  <Button variant="outlined" color="primary">
-                    <Link to={`/session/${workoutSession?.id}`}>
-                      Current Session
-                    </Link>
-                  </Button>
-                )}
-              </div>
-
-              <div className="workout-cards">
-                {workouts.map((workout) => {
-                  return (
-                    <WorkoutCard
-                      key={workout.id}
-                      workout={workout}
-                      session={workoutSession}
-                    />
-                  );
-                })}
-              </div>
-            </div>
-          </>
-        </div>
-      </div>
+      <Stack
+        direction="row"
+        spacing={2}
+        sx={{ margin: "20px 0px", justifyContent: "space-between" }}
+      >
+        <Fab
+          color="primary"
+          className="fab-base"
+          style={fabLeftStyles}
+          onClick={() => history.push("/workouts/new")}
+        >
+          <AddIcon />
+        </Fab>
+        {workoutSession && (
+          <Fab
+            color="secondary"
+            style={fabRightStyles}
+            onClick={() => history.push(`/session/${workoutSession?.id}`)}
+          >
+            <FitnessCenterIcon />
+          </Fab>
+        )}
+      </Stack>
+      {workouts.length ? (
+        <Grid container spacing={6} justifyContent="center">
+          {workouts.map((workout) => {
+            return (
+              <Grid item key={workout.id}>
+                <WorkoutCard
+                  key={workout.id}
+                  workout={workout}
+                  session={workoutSession}
+                />
+              </Grid>
+            );
+          })}
+        </Grid>
+      ) : (
+        <Typography variant="h6">Looks like you need some workouts!</Typography>
+      )}
     </>
   );
 };

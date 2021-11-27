@@ -1,16 +1,26 @@
 import { useState, ChangeEvent } from "react";
-import { MenuItem, TextField, InputAdornment, Button, Fab, IconButton } from "@mui/material";
-import { Save as SaveIcon, Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
+import { useHistory } from "react-router-dom";
+import {
+  MenuItem,
+  TextField,
+  InputAdornment,
+  Fab,
+  IconButton,
+} from "@mui/material";
+import {
+  Save as SaveIcon,
+  Add as AddIcon,
+  Delete as DeleteIcon,
+} from "@mui/icons-material";
+import Stack from "@mui/material/Stack";
 import { ExerciseOptions } from "./exercise-options";
 import { useExercises } from "./exercises-context";
 import {
   CreateWorkoutRequest,
   Exercise,
-  ExerciseConfiguration
+  ExerciseConfiguration,
 } from "../../shared/models";
-import {
-  useHistory
-} from "react-router-dom";
+import { fabLeftStyles, fabRightStyles } from "./styles";
 
 export enum ExerciseCategory {
   LowerBody = "Lower Body",
@@ -21,6 +31,7 @@ export enum ExerciseCategory {
 export const CreateWorkout = () => {
   const history = useHistory();
   const { exercises } = useExercises();
+  const [validationError, setValidationError] = useState<string>();
   const [category, setCategory] = useState<ExerciseCategory>();
   const [exercise, setExercise] = useState<Exercise>();
   const [name, setName] = useState<string>("");
@@ -30,6 +41,14 @@ export const CreateWorkout = () => {
   const [exerciseConfigs, setExerciseConfigs] = useState<
     ExerciseConfiguration[]
   >([]);
+
+  const isUpperBody = category === ExerciseCategory.UpperBody;
+  const isLowerBody = category === ExerciseCategory.LowerBody;
+  const isCardio = category === ExerciseCategory.Cardio;
+  const isValidCardioExercise = exercise && isCardio && durationMinutes > 0;
+  const isValidWeightsExercise =
+    exercise && (isUpperBody || isLowerBody) && sets > 0 && reps > 0;
+  const isValidExercise = isValidCardioExercise || isValidWeightsExercise;
 
   const handleAddExercise = () => {
     const exerciseConfiguration: ExerciseConfiguration = {
@@ -42,6 +61,10 @@ export const CreateWorkout = () => {
   };
 
   const handleSaveWorkout = async () => {
+    if (!name) {
+      setValidationError("Workout name is required");
+      return;
+    }
     try {
       const data: CreateWorkoutRequest = {
         name: name,
@@ -66,6 +89,9 @@ export const CreateWorkout = () => {
 
   const handleChangeName = (event: ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
+    if (name !== "") {
+      setValidationError(undefined);
+    }
   };
 
   const handleChangeCategory = (event: ChangeEvent<HTMLInputElement>) => {
@@ -106,6 +132,8 @@ export const CreateWorkout = () => {
             label="Workout name"
             variant="outlined"
             onChange={handleChangeName}
+            helperText={validationError}
+            error={Boolean(validationError)}
           />
           <br />
           <TextField
@@ -168,7 +196,7 @@ export const CreateWorkout = () => {
               </div>
               <br />
               <TextField
-                label=""
+                label="Reps"
                 id="reps"
                 type="number"
                 value={reps}
@@ -201,70 +229,55 @@ export const CreateWorkout = () => {
           />
         )}
         <br />
-        {(sets && reps && category !== ExerciseCategory.Cardio) ||
-        (durationMinutes && category === ExerciseCategory.Cardio) ? (
-          <>
-            <Fab
-              size="medium"
-              color="secondary"
-              aria-label="add"
-              onClick={() => handleAddExercise()}
-              className={""}
-            >
-              <AddIcon />
-            </Fab>
-          </>
-        ) : (
-          ""
-        )}
-      </div>{" "}
-      {exerciseConfigs.length > 0 ? (
-        <div className="saved">
-          <div>
-            <ul>
-              {exerciseConfigs.map(
-                ({ exercise, sets, reps, durationMinutes }, index) => {
-                  return (
-                    exercise && (
-                      <div key={index}>
-                        <li key={index}>
-                          {exercise.category === ExerciseCategory.Cardio ? (
-                            <span>
-                              {exercise.name} for {durationMinutes} minutes
-                            </span>
-                          ) : (
-                            <span>
-                              {exercise.name} {sets} sets of {reps}
-                            </span>
-                          )}
-                          <button className="delete-exercise-btn">
-                            <IconButton aria-label="delete">
-                              <DeleteIcon
-                                onClick={() => removeFromList(exercise.id)}
-                              />
-                            </IconButton>
-                          </button>
-                        </li>
-                      </div>
-                    )
-                  );
-                }
-              )}
-            </ul>
-          </div>
-          <br />
-          <Button
-            variant="contained"
-            color="primary"
-            size="large"
-            startIcon={<SaveIcon />}
-            onClick={handleSaveWorkout}
+        {isValidExercise ? (
+          <Fab
+            color="secondary"
+            aria-label="add"
+            style={fabRightStyles}
+            onClick={() => handleAddExercise()}
+            className={""}
           >
-            Save workout
-          </Button>
+            <AddIcon />
+          </Fab>
+        ) : null}
+      </div>{" "}
+      {exerciseConfigs.length > 0 && (
+        <div>
+          <Stack spacing={1} alignItems="center">
+            {exerciseConfigs.map(
+              ({ exercise, sets, reps, durationMinutes }, index) => {
+                return (
+                  exercise && (
+                    <div key={index} style={{display: "flex", width: "300px", justifyContent: "space-between", alignItems: "center"}}>
+                      {exercise.category === ExerciseCategory.Cardio ? (
+                        <span>
+                          {exercise.name} for {durationMinutes} minutes
+                        </span>
+                      ) : (
+                        <span>
+                          {exercise.name} {sets} sets of {reps}
+                        </span>
+                      )}
+                      <IconButton
+                        aria-label="delete"
+                        onClick={() => removeFromList(exercise.id)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </div>
+                  )
+                );
+              }
+            )}
+          </Stack>
+          <Fab
+            color="primary"
+            onClick={handleSaveWorkout}
+            style={fabLeftStyles}
+          >
+            <SaveIcon />
+          </Fab>
         </div>
-      ) : (
-        ""
       )}
     </>
   );
