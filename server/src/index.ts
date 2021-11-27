@@ -304,6 +304,17 @@ app.get(
   }
 );
 
+if (process.env.NODE_ENV === "production") {
+  app.use('/', express.static(`${process.env.ROOT_DIR}/client/public`));
+}
+
+app.get("**", (_, res: Response) => {
+  res.sendFile(`${process.env.ROOT_DIR}/client/public/index.html`)
+});
+
+
+
+
 app.listen(port, () => {
   console.log(`server started at ${port}`);
 });
