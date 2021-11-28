@@ -10,6 +10,10 @@
     "noFallthroughCasesInSwitch": true,
     "composite": true,
     "esModuleInterop": true,
-    "rootDir": "."
-  }
+    "outDir": "./build",
+  },
+  "include": [
+    "./server/src/",
+    "./shared/",
+  ]
 }
