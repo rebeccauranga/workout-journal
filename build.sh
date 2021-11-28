@@ -1,7 +1,9 @@
 set -x
 
-cd ./client 
-npm run build
+# build client
+cd ./client && npm run build
 
-cd ../server
-NODE_ENV=production npm run build
+cd ..
+
+# build server
+cd ./server && npm run build
