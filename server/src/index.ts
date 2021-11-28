@@ -1,6 +1,7 @@
 import express, { Request, Response, NextFunction } from "express";
 import session from "express-session";
 import passport from "passport";
+import path from "path";
 import passportGoogleOauth from "passport-google-oauth";
 import connectPg from "connect-pg-simple";
 const postgresSession = connectPg(session);
@@ -36,7 +37,7 @@ import {
 import { InvalidArgumentError } from "./errors";
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 const GoogleStrategy = passportGoogleOauth.OAuth2Strategy;
 const sessionCookieName = "workoutsession.sid";
 
@@ -305,15 +306,12 @@ app.get(
 );
 
 if (process.env.NODE_ENV === "production") {
-  app.use('/', express.static(`${process.env.ROOT_DIR}/client/public`));
+  const clientPath = path.resolve(__dirname, "../../client");
+  app.use(express.static(clientPath));
+  app.get("*", (_, res: Response) => {
+    res.sendFile(path.join(clientPath, "index.html"));
+  });
 }
-
-app.get("**", (_, res: Response) => {
-  res.sendFile(`${process.env.ROOT_DIR}/client/public/index.html`)
-});
-
-
-
 
 app.listen(port, () => {
   console.log(`server started at ${port}`);

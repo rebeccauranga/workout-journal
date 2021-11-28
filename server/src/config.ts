@@ -11,7 +11,7 @@ const config: Config = {
   googleClientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
   databaseUrl: process.env.DATABASE_URL as string,
   host: process.env.SERVER_HOST as string,
-  clientHost: process.env.CLIENT_HOST as string,
+  clientHost: (process.env.NODE_ENV === "production" ? process.env.SERVER_HOST : process.env.CLIENT_HOST) as string,
 };
 
 if (!config.googleClientId) {
