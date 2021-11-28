@@ -11,7 +11,12 @@ const useProvideExercises = (): ExerciseData => {
 
   async function getExercises() {
     const url = "/api/exercises";
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      headers : { 
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+       }
+    });
     if (response.status === 200) {
       const exercises = await response.json();
       setExercises(exercises);

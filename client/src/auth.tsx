@@ -13,7 +13,15 @@ const useProvideAuth = (): AuthData => {
 
   async function fetchUser() {
     try {
-      const response = await fetch("/api/user");
+      const response = await fetch("/api/user", {
+        headers : { 
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+         }
+      });
+      console.log("response: ", response);
+      console.log("headers: ", response.headers);
+      // console.log("body: ", await response.text());
       if (response.status === 200) {
         const user = await response.json();
         setUser(user);
