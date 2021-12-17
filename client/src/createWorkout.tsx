@@ -19,7 +19,7 @@ import {
   CreateWorkoutRequest,
   Exercise,
   ExerciseConfiguration,
-} from "../../shared/models";
+} from "../../shared/src/models";
 import { fabLeftStyles, fabRightStyles } from "./styles";
 
 export enum ExerciseCategory {

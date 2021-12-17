@@ -11,7 +11,7 @@ import {
   WorkoutExercise,
   WorkoutSession,
   WorkoutSessionExercise,
-} from "../../shared/models";
+} from "../../shared/src/models";
 import { fabRightStyles } from "./styles";
 import { useExercises } from "./exercises-context";
 

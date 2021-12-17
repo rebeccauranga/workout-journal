@@ -1,5 +1,5 @@
 {
- "extends": "../tsconfig.json",  
+ "extends": "../tsconfig.base.json",  
     "compilerOptions": {
       "target": "ES5" /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', 'ES2018', 'ES2019', 'ES2020', or 'ESNEXT'. */,
       "module": "ESNext" /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', 'es2020', or 'ESNext'. */,
@@ -15,8 +15,19 @@
       "strict": true /* Enable all strict type-checking options. */,
       "skipLibCheck": true /* Skip type checking of declaration files. */,
       "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */,
-      "resolveJsonModule": true
+      "resolveJsonModule": true,
       // "allowJs": true /* Allow javascript files to be compiled. Useful when migrating JS to TS */,
       // "checkJs": true /* Report errors in .js files. Works in tandem with allowJs. */,
+      "rootDir": "./src",
+      "baseUrl": "./",
+      "paths": {
+        "client/*": ["./src/*"],
+        "shared/*": ["../shared/src/*"]
+      }
     },
+    "references": [
+      {
+        "path": "../shared"
+      }
+    ]
   }

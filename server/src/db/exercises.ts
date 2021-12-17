@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
-import { Exercise } from "../../../shared/models";
-import pool from "./config";
+import { Exercise } from "shared/models";
+import pool from "server/db/config";
 
 export async function createExercise(exercise: Exercise): Promise<Exercise> {
   const sql =

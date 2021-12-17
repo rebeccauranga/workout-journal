@@ -1,5 +1,5 @@
 import { useState, useEffect, createContext, useContext } from "react";
-import { User } from "../../shared/models";
+import { User } from "../../shared/src/models";
 
 interface AuthData {
   user?: User;

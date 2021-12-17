@@ -1,5 +1,5 @@
 import { Pool, PoolConfig } from "pg";
-import Config from "../config"
+import Config from "server/config"
 
 const config: PoolConfig = {
   user: Config.dbUser,

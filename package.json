@@ -1,0 +1,22 @@
+{
+  "name": "workout-journal",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/rebeccauranga/workout-journal",
+  "author": "<urangarebecca@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc --build tsconfig.packages.json",
+    "server": "cd server && yarn start",
+    "client": "cd client && yarn start"
+  },
+  "private": true,
+  "_moduleAliases": {
+    "shared": "shared/dist",
+    "server": "server/dist"
+  },
+  "workspaces": [
+    "shared",
+    "server"
+  ]
+}

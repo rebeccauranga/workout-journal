@@ -4,7 +4,7 @@ import {
   WorkoutExercise,
   WorkoutSession,
   WorkoutSessionExercise,
-} from "../../../shared/models";
+} from "../../../shared/src/models";
 import { listWorkoutExercises } from "./workouts";
 import { InvalidArgumentError } from "../errors";
 

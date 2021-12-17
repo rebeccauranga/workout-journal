@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { WorkoutDetail, Exercise } from "../../shared/models";
+import { WorkoutDetail, Exercise } from "../../shared/src/models";
 import { useExercises } from "./exercises-context";
 
 // TO DO: add info icon and tooltip with exercise description

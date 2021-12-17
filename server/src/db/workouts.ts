@@ -5,7 +5,7 @@ import {
   Workout,
   WorkoutExercise,
   WorkoutDetail
-} from "../../../shared/models";
+} from "../../../shared/src/models";
 import pool from "./config";
 import { InvalidArgumentError } from "../errors";
 

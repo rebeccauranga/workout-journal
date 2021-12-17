@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import pool from "./config";
-import { User } from "../../../shared/models";
+import { User } from "../../../shared/src/models";
 
 export async function createUser(
   email: string,

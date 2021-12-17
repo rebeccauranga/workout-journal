@@ -4,6 +4,7 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
+    "start": "node ./dist/index.js",
     "build": "tsc --build",
     "serve": "tsc -w & nodemon -w build build/server/src/index.js",
     "clean": "rm -r build",
@@ -25,6 +26,7 @@
     "passport": "^0.5.0",
     "passport-google-oauth": "^2.0.0",
     "pg": "^8.7.1",
+    "shared": "1.0.0",
     "typescript": "^4.4.3",
     "uuid": "^8.3.2"
   },
@@ -36,6 +38,7 @@
     "@types/passport": "^1.0.7",
     "@types/passport-google-oauth": "^1.0.42",
     "@types/pg": "^8.6.1",
+    "module-alias": "^2.2.2",
     "nodemon": "^2.0.12"
   }
 }

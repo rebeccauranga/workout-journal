@@ -1,5 +1,5 @@
 import React, { useState, useEffect, createContext, useContext } from "react";
-import { Exercise } from "../../shared/models";
+import { Exercise } from "../../shared/src/models";
 
 interface ExerciseData {
   exercises: Exercise[];

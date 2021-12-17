@@ -1,4 +1,4 @@
-import pool from "./config";
+import pool from "server/db/config";
 
 const exercisesDDL = `
     CREATE TABLE IF NOT EXISTS exercises (

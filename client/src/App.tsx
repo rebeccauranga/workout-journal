@@ -19,7 +19,7 @@ import { theme } from "./theme";
 import { ProvideAuth, useAuth } from "./auth";
 import { ProvideExercises } from "./exercises-context";
 import NavBar from "./navbar";
-import { User } from "../../shared/models";
+import { User } from "shared/models";
 import SessionDetail from "./SessionDetail";
 
 export const App = () => {

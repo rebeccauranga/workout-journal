@@ -1,6 +1,6 @@
 import { MenuItem, TextField } from "@mui/material";
 import { ChangeEvent } from "react";
-import { Exercise, ExerciseCategory } from "../../shared/models";
+import { Exercise, ExerciseCategory } from "../../shared/src/models";
 
 interface ExerciseOptionsProps {
   category: ExerciseCategory;

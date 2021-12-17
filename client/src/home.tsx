@@ -8,7 +8,7 @@ import Stack from "@mui/material/Stack";
 import { Typography } from "@mui/material";
 
 import { useHistory } from "react-router-dom";
-import { Workout, WorkoutSession } from "../../shared/models";
+import { Workout, WorkoutSession } from "../../shared/src/models";
 import WorkoutCard from "./WorkoutCard";
 import { fabLeftStyles, fabRightStyles } from "./styles";
 

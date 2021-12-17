@@ -1,5 +1,5 @@
-import pool from "./config";
-import { Exercise } from "../../../shared/models";
+import pool from "server/db/config";
+import { Exercise } from "shared/models";
 
 export async function listExercises(): Promise<Exercise[]> {
   const sql = "SELECT id, name, category, description, video_url FROM exercises;";

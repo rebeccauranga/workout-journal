@@ -10,6 +10,6 @@
     "noFallthroughCasesInSwitch": true,
     "composite": true,
     "esModuleInterop": true,
-    "rootDir": "."
+    "moduleResolution": "node",
   }
 }

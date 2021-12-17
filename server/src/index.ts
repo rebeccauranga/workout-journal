@@ -1,3 +1,5 @@
+require("module-alias/register");
+
 import express, { Request, Response, NextFunction } from "express";
 import session from "express-session";
 import passport from "passport";
@@ -5,8 +7,8 @@ import passportGoogleOauth from "passport-google-oauth";
 import connectPg from "connect-pg-simple";
 const postgresSession = connectPg(session);
 
-import pool from "./db/config";
-import config from "./config";
+import pool from "server/db/config";
+import config from "server/config";
 import {
   Exercise,
   User,
@@ -15,16 +17,17 @@ import {
   WorkoutDetail,
   WorkoutSession,
   WorkoutSessionDetailsResponse,
-} from "../../shared/models";
-import { listExercises } from "./db/db";
-import { findOrCreateUser, findUserById } from "./db/users";
+} from "shared/models";
+
+import { listExercises } from "server/db/db";
+import { findOrCreateUser, findUserById } from "server/db/users";
 import {
   createWorkout,
   findWorkoutById,
   findWorkoutDetailById,
   listWorkouts,
   listWorkoutExercises,
-} from "./db/workouts";
+} from "server/db/workouts";
 import {
   createWorkoutSession,
   completeWorkoutSession,
@@ -32,8 +35,8 @@ import {
   getWorkoutSessionById,
   getWorkoutSessionExercises,
   toggleCompleteSessionExercise,
-} from "./db/workoutSession";
-import { InvalidArgumentError } from "./errors";
+} from "server/db/workoutSession";
+import { InvalidArgumentError } from "server/errors";
 
 const app = express();
 const port = 3000;
